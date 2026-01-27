@@ -7,6 +7,10 @@ plugins {
 version = "0.1"
 group = "com.example"
 
+micronaut {
+    version("4.0.4")
+}
+
 repositories {
     mavenCentral()
 }
