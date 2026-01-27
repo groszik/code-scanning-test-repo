@@ -1,0 +1,5 @@
+micronaut:
+  application:
+    name: code-scanning-test-repo
+  server:
+    port: 8080
