@@ -57,6 +57,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: 8.3
+
     # Add any setup steps before running the `github/codeql-action/init` action.
     # This includes steps like installing compilers or runtimes (`actions/setup-node`
     # or others). This is typically only required for manual builds.
@@ -86,7 +97,7 @@ jobs:
       if: matrix.build-mode == 'manual'
       shell: bash
       run: |
-        ./gradlew build -x test
+        gradle build -x test
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
