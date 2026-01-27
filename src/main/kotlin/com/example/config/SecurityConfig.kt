@@ -7,8 +7,9 @@ import java.security.MessageDigest
 class SecurityConfig {
     
     // Additional hardcoded secrets
-    val jwtSecret = "mySecretKey123"
-    val encryptionKey = "AES256Key1234567"
+    val jwtSecret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ"
+    val encryptionKey = "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7VJTUt9Us8cKB\n-----END PRIVATE KEY-----"
+    val githubToken = "ghp_1234567890abcdef1234567890abcdef123456"
     
     fun hashPassword(password: String): String {
         // Vulnerability: Using weak MD5 hashing

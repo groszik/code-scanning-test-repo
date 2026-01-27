@@ -14,8 +14,10 @@ class UserController {
     private val logger = LoggerFactory.getLogger(UserController::class.java)
     
     // Vulnerability 1: Hardcoded secret
-    private val apiKey = "sk-1234567890abcdef"
-    private val dbPassword = "admin123"
+    private val apiKey = "sk-proj-1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+    private val dbPassword = "postgres://user:password123@localhost:5432/mydb"
+    private val awsAccessKey = "AKIAIOSFODNN7EXAMPLE"
+    private val awsSecretKey = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
     
     private val users = mutableListOf(
         User(1, "John Doe", "john@example.com"),
