@@ -22,6 +22,13 @@ secret:
 misconfig:
   include-non-failures: true
   trace: true
+  file-patterns:
+    - "*.kt"
+    - "*.java"
+    - "*.gradle"
+    - "*.gradle.kts"
+    - "*.yml"
+    - "*.yaml"
 
 # Output settings
 format: sarif
@@ -45,3 +52,12 @@ cache:
   
 # Timeout settings
 timeout: 10m
+
+# File patterns to include
+file-patterns:
+  - "**/*.kt"
+  - "**/*.java"
+  - "**/*.gradle"
+  - "**/*.gradle.kts"
+  - "build.gradle*"
+  - "settings.gradle*"
