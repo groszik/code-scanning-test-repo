@@ -27,10 +27,18 @@ jobs:
         uses: aquasecurity/trivy-action@0.20.0
         with:
           scan-type: 'fs'
-          ignore-unfixed: true
+          ignore-unfixed: false
           format: 'sarif'
           output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+      # Debug: Check SARIF file contents
+      - name: Display Trivy results
+        run: |
+          echo "SARIF file size:"
+          ls -la trivy-results.sarif
+          echo "SARIF file contents (first 1000 chars):"
+          head -c 1000 trivy-results.sarif
 
       # Upload scan results to GitHub Security tab
       - name: Upload Trivy scan results to GitHub Security
