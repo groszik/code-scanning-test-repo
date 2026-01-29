@@ -22,23 +22,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Setup Trivy
-      - name: Run Trivy vulnerability scanner in repo mode
+      # Run Trivy for dependencies and secrets
+      - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.20.0
         with:
           scan-type: 'fs'
+          scanners: 'vuln,secret,misconfig'
           ignore-unfixed: false
           format: 'sarif'
           output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH,MEDIUM'
-
-      # Debug: Check SARIF file contents
-      - name: Display Trivy results
-        run: |
-          echo "SARIF file size:"
-          ls -la trivy-results.sarif
-          echo "SARIF file contents (first 1000 chars):"
-          head -c 1000 trivy-results.sarif
+          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
 
       # Upload scan results to GitHub Security tab
       - name: Upload Trivy scan results to GitHub Security
