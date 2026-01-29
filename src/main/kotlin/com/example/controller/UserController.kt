@@ -4,8 +4,10 @@ import com.example.model.User
 import io.micronaut.http.annotation.*
 import jakarta.inject.Singleton
 import org.slf4j.LoggerFactory
+import java.sql.Connection
 import java.sql.DriverManager
 import java.util.*
+import jakarta.annotation.PostConstruct
 
 @Controller("/users")
 @Singleton
@@ -19,33 +21,87 @@ class UserController {
     private val awsAccessKey = "AKIAIOSFODNN7EXAMPLE"
     private val awsSecretKey = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
     
-    private val users = mutableListOf(
-        User(1, "John Doe", "john@example.com"),
-        User(2, "Jane Smith", "jane@example.com")
-    )
+    private lateinit var connection: Connection
+    
+    @PostConstruct
+    fun initDatabase() {
+        connection = DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1")
+        
+        // Create users table
+        connection.createStatement().execute("""
+            CREATE TABLE users (
+                id BIGINT PRIMARY KEY,
+                name VARCHAR(255),
+                email VARCHAR(255)
+            )
+        """)
+        
+        // Insert sample data
+        connection.createStatement().execute(
+            "INSERT INTO users (id, name, email) VALUES (1, 'John Doe', 'john@example.com')"
+        )
+        connection.createStatement().execute(
+            "INSERT INTO users (id, name, email) VALUES (2, 'Jane Smith', 'jane@example.com')"
+        )
+    }
 
     @Get
-    fun getAllUsers(): List<User> = users
+    fun getAllUsers(): List<User> {
+        val users = mutableListOf<User>()
+        val stmt = connection.createStatement()
+        val rs = stmt.executeQuery("SELECT * FROM users")
+        
+        while (rs.next()) {
+            users.add(User(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("email")
+            ))
+        }
+        return users
+    }
 
     @Get("/{id}")
     fun getUserById(id: Long): User? {
         // Vulnerability 2: Log injection
         logger.info("Fetching user with ID: $id")
-        return users.find { it.id == id }
+        
+        val stmt = connection.createStatement()
+        val rs = stmt.executeQuery("SELECT * FROM users WHERE id = $id")
+        
+        return if (rs.next()) {
+            User(rs.getLong("id"), rs.getString("name"), rs.getString("email"))
+        } else null
     }
 
     @Post
     fun createUser(@Body user: User): User {
-        users.add(user)
+        val stmt = connection.prepareStatement("INSERT INTO users (id, name, email) VALUES (?, ?, ?)")
+        stmt.setLong(1, user.id)
+        stmt.setString(2, user.name)
+        stmt.setString(3, user.email)
+        stmt.executeUpdate()
         return user
     }
     
     @Get("/search")
     fun searchUsers(name: String?): List<User> {
-        // Vulnerability 3: SQL injection
-        val query = "SELECT * FROM users WHERE name = '$name'"
+        // Vulnerability 3: SQL injection - directly concatenating user input
+        val query = "SELECT * FROM users WHERE name LIKE '%$name%'"
         logger.debug("Executing query: $query")
-        return users.filter { it.name.contains(name ?: "", ignoreCase = true) }
+        
+        val users = mutableListOf<User>()
+        val stmt = connection.createStatement()
+        val rs = stmt.executeQuery(query)
+        
+        while (rs.next()) {
+            users.add(User(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("email")
+            ))
+        }
+        return users
     }
     
     @Post("/login")

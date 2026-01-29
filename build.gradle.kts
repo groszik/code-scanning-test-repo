@@ -22,6 +22,7 @@ dependencies {
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.10")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10")
+    implementation("com.h2database:h2:2.2.224")
     runtimeOnly("ch.qos.logback:logback-classic")
 }
 
