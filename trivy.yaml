@@ -1,0 +1,47 @@
+# Trivy configuration file
+# Enable all available scanners
+scan:
+  # Enable all scanner types
+  scanners:
+    - vuln          # Vulnerability scanning
+    - secret        # Secret detection
+    - misconfig     # Misconfiguration detection
+    - license       # License scanning
+
+# Vulnerability settings
+vulnerability:
+  type:
+    - os
+    - library
+  
+# Secret scanning settings
+secret:
+  config: .trivyignore-secrets
+
+# Misconfiguration settings
+misconfig:
+  include-non-failures: true
+  trace: true
+
+# Output settings
+format: sarif
+output: trivy-full-results.sarif
+
+# Severity levels to report
+severity:
+  - UNKNOWN
+  - LOW
+  - MEDIUM
+  - HIGH
+  - CRITICAL
+
+# Exit code settings
+exit-code: 0
+ignore-unfixed: false
+
+# Cache settings
+cache:
+  clear: false
+  
+# Timeout settings
+timeout: 10m
