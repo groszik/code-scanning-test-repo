@@ -118,4 +118,15 @@ class UserController {
             "apiKey" to apiKey
         )
     }
+    
+    @Get("/download")
+    fun downloadFile(filename: String): String {
+        // Vulnerability 6: Path traversal - allows access to any file on the system
+        val filePath = "/app/files/$filename"
+        return try {
+            java.io.File(filePath).readText()
+        } catch (e: Exception) {
+            "File not found: ${e.message}"
+        }
+    }
 }
