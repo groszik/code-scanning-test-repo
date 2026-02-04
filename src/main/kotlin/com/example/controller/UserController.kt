@@ -20,6 +20,7 @@ class UserController {
     private val dbPassword = "postgres://user:password123@localhost:5432/mydb"
     private val awsAccessKey = "AKIAIOSFODNN7EXAMPLE"
     private val awsSecretKey = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    private val jwtSecret = "mySecretJWTKey123456789"
     
     private lateinit var connection: Connection
     
